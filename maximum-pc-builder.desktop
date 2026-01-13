@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Maximum PC Builder
+Comment=Strategic PC building RPG game
+Exec=/usr/bin/maximum-pc-builder
+Icon=/usr/share/pixmaps/maximum-pc-builder.png
+Terminal=false
+Categories=Game;Strategy;Simulation;
+Keywords=pc;computer;building;strategy;rpg;
+StartupNotify=true

@@ -1,0 +1,20 @@
+Package: maximum-pc-builder
+Version: 1.0.0
+Section: games
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.8), python3-tk
+Maintainer: Matthew Chapdelaine <matthew@example.com>
+Description: Maximum Performance PC Builder - Strategic RPG Game
+ A click-button RPG strategy game where you build the ultimate
+ high-performance Linux workstation. Features include:
+ .
+  * Progressive research and technology unlocking
+  * Resource management with game currency
+  * Strategic planning for component purchases
+  * Real-world inspired PC components and specifications
+  * Progress bars and city-building game mechanics
+  * Save/Load game functionality
+ .
+ Build your path to technological supremacy!
+Homepage: https://github.com/MatthewPChapdelaine/Maximum-Computer-Design-Game

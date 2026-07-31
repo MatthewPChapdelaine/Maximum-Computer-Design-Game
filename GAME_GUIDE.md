@@ -6,6 +6,7 @@
 - [Understanding Resources](#understanding-resources)
 - [Component Categories](#component-categories)
 - [Research System](#research-system)
+- [Achievements](#achievements-)
 - [Building Strategy](#building-strategy)
 - [Advanced Tips](#advanced-tips)
 - [Winning the Game](#winning-the-game)
@@ -37,9 +38,9 @@ Welcome to Maximum PC Builder! This strategic RPG challenges you to build the ul
 - High-end components are very expensive ($10K-$480K)
 
 ### Research Points 🔬
-- Currently displayed but not yet limiting
+- Starting research on a component consumes research points equal to its research time in seconds (1 point per second)
+- Insufficient points blocks research
 - Generates passively over time
-- Future expansion will add research costs
 
 ### Power Budget ⚡
 - Each component consumes power
@@ -124,6 +125,12 @@ Thermal management:
 3. Wait for research to complete (real-time progress)
 4. Component becomes available for purchase
 
+### Research Costs
+- Starting research consumes 1 research point per second of research time
+- Example: a 60-second research project costs 60 research points
+- Research is blocked if you don't have enough points
+- Points regenerate passively, so budget them across your research path
+
 ### Research Times
 - Basic components: 5-15 seconds
 - Mid-tier: 30-60 seconds
@@ -136,6 +143,28 @@ Most components require owning previous tier components:
 - Must own "Mid-Range CPU" before researching "High-End CPU"
 - Prerequisites prevent skipping tiers
 - Plan your research path carefully
+
+## Achievements 🏆
+
+The "🏆 Achievements" button opens a window showing your progress across 15 unlockable achievements. They track major milestones in your building journey:
+
+- **First Build** - Own your first component
+- **Scholar** - Complete 5 research projects
+- **Research Master** - Complete 15 research projects
+- **Money Maker** - Earn $100,000 in passive income
+- **Tech Tycoon** - Earn $500,000 in passive income
+- **Power Player** - Reach a 24,000W power budget
+- **Memory Mogul** - Own the 24TB DDR5-6400 Ultimate
+- **Storage Giant** - Own the 1PB RAID Array
+- **Compute Champion** - Own the NVIDIA H200 Octo
+- **Server King** - Own the Server Platform
+- **Network Ninja** - Own the 100Gb QSFP28 Dual
+- **Core Lord** - Own the AMD EPYC 9754 or Intel Xeon Platinum 8592+
+- **Technological Supremacy** - Complete the ultimate build
+- **Completionist** - Own every component in the game
+- **Veteran Builder** - Play for 30 minutes
+
+Achievements unlock automatically as you play, so keep building toward that ultimate machine.
 
 ## Building Strategy
 
@@ -207,6 +236,7 @@ Final components to purchase:
 ### Resource Management
 - Don't rush purchases - passive income adds up
 - Research multiple components simultaneously is not possible (only one at a time)
+- The game auto-saves every ~30 seconds and on window close, so you won't lose progress
 - Save before major purchases
 - Balance spending across categories
 
@@ -240,10 +270,10 @@ Final components to purchase:
 
 ### Victory Condition
 Complete the ultimate build with these components owned:
-- AMD EPYC 9754
+- AMD EPYC 9754 (or Intel Xeon Platinum 8592+)
 - 24TB DDR5-6400 Ultimate
 - 1PB RAID Array
-- NVIDIA H200 Octo (or B200 Quad)
+- NVIDIA H200 Octo (or NVIDIA B200 Quad)
 - Server Platform
 - 100Gb QSFP28 Dual
 - Quad 6kW Titanium
@@ -269,10 +299,13 @@ A: No, only one component can be researched at a time.
 A: Passive income continues, so wait for money to accumulate.
 
 **Q: Can I sell components?**
-A: Not in version 1.0, but this may be added in future versions.
+A: Not yet, but this may be added in future versions.
 
 **Q: How do I save my game?**
-A: Click the "💾 Save Game" button. Saves to `~/.maximum_pc_game_save.json`
+A: The game auto-saves every ~30 seconds and on window close. You can also click the "💾 Save Game" button to save manually. Saves go to `~/.maximum_pc_game_save.json`
+
+**Q: What are achievements?**
+A: Achievements track your milestones, from your First Build to Technological Supremacy. Click the "🏆 Achievements" button to open a window showing progress across all 15 achievements.
 
 **Q: Can I play on Windows or Mac?**
 A: Currently Linux only, but the Python code could be adapted.

@@ -1,0 +1,26 @@
+maximum-pc-builder (1.1.0) unstable; urgency=medium
+
+  * Achievement system with 15 unlockable achievements
+  * Stats tracking (money earned, researches completed, purchases, play time)
+  * Auto-save every ~30 seconds and on window close
+  * Research costs: starting research consumes research points equal to
+    research time in seconds
+  * Victory state saved and loaded; victory popup shows once per save
+  * Fix: PSU power budget no longer drops when buying a smaller PSU
+  * Fix: research completion refreshes progress bar and details panel
+  * Fix: victory accepts alternate CPU and GPU components
+  * Fix: game loads saved state silently at startup
+
+ -- Matthew Chapdelaine <matthew@example.com>  Fri, 31 Jul 2026 00:00:00 +0000
+
+maximum-pc-builder (1.0.0) unstable; urgency=medium
+
+  * Initial release
+  * Progressive research system with tech tree
+  * 38 components across 8 categories
+  * Real-time resource management and performance scoring
+  * Save/Load game functionality
+  * Dark-themed GUI, prerequisite system, category filtering
+  * Ultimate build detection and victory condition
+
+ -- Matthew Chapdelaine <matthew@example.com>  Tue, 13 Jan 2026 00:00:00 +0000

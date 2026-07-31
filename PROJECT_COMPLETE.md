@@ -1,5 +1,7 @@
 # 🎮 Maximum Performance PC Builder - Project Complete! 🚀
 
+> Now at v1.1.0 — achievements, auto-save, research costs, and bug fixes added.
+
 ## ✅ What Has Been Created
 
 A complete, production-ready Linux desktop game that is:
@@ -13,7 +15,7 @@ A complete, production-ready Linux desktop game that is:
 ### Game Application
 - **Full Python/Tkinter Game** (`src/maximum_pc_game.py`)
   - 900+ lines of polished code
-  - 40+ components across 8 categories
+  - 38 components across 8 categories
   - Progressive research system
   - Resource management mechanics
   - Save/load functionality
@@ -56,7 +58,7 @@ A complete, production-ready Linux desktop game that is:
 ✅ Strategic planning required
 ✅ Performance scoring
 
-### Components (40+ Total)
+### Components (38 Total)
 ✅ **CPUs** - Budget to AMD EPYC 9754 (128 cores)
 ✅ **RAM** - 16GB to 24TB DDR5-6400
 ✅ **Storage** - 500GB SSD to 1PB RAID + 2PB secondary
@@ -92,7 +94,7 @@ chmod +x quick-start.sh
 # Or build and install manually
 chmod +x build-deb.sh
 ./build-deb.sh
-sudo dpkg -i maximum-pc-builder_1.0.0.deb
+sudo dpkg -i maximum-pc-builder_1.1.0.deb
 
 # Launch the game
 maximum-pc-builder
@@ -111,7 +113,7 @@ chmod +x run-game.sh
 
 ## 📊 Game Statistics
 
-- **Total Components**: 40+
+- **Total Components**: 38
 - **Component Categories**: 8
 - **Cost Range**: $50 - $500,000 per component
 - **Ultimate Build Cost**: ~$1.1M - $1.4M
@@ -238,7 +240,7 @@ You now have a **complete, professional-grade Linux game** that:
 
 3. **Install and Play**
    ```bash
-   sudo dpkg -i maximum-pc-builder_1.0.0.deb
+   sudo dpkg -i maximum-pc-builder_1.1.0.deb
    maximum-pc-builder
    ```
 

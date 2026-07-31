@@ -7,7 +7,7 @@ echo "Building Maximum PC Builder .deb package..."
 
 # Variables
 PACKAGE_NAME="maximum-pc-builder"
-VERSION="1.0.0"
+VERSION="1.1.0"
 BUILD_DIR="build"
 PACKAGE_DIR="${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}"
 
@@ -37,12 +37,15 @@ chmod 755 ${PACKAGE_DIR}/DEBIAN/postrm
 echo "Copying application files..."
 cp src/maximum_pc_game.py ${PACKAGE_DIR}/usr/share/${PACKAGE_NAME}/
 
-# Create launcher script
-cat > ${PACKAGE_DIR}/usr/bin/${PACKAGE_NAME} << 'EOF'
+# Create launcher script in /usr/games (Debian games convention),
+# with a /usr/bin symlink so it is also on standard PATHs
+mkdir -p ${PACKAGE_DIR}/usr/games
+cat > ${PACKAGE_DIR}/usr/games/${PACKAGE_NAME} << 'EOF'
 #!/bin/bash
 python3 /usr/share/maximum-pc-builder/maximum_pc_game.py "$@"
 EOF
-chmod 755 ${PACKAGE_DIR}/usr/bin/${PACKAGE_NAME}
+chmod 755 ${PACKAGE_DIR}/usr/games/${PACKAGE_NAME}
+ln -s ../games/${PACKAGE_NAME} ${PACKAGE_DIR}/usr/bin/${PACKAGE_NAME}
 
 # Copy desktop file
 echo "Copying desktop file..."
@@ -66,19 +69,22 @@ fi
 # Copy documentation
 echo "Copying documentation..."
 cp README.md ${PACKAGE_DIR}/usr/share/doc/${PACKAGE_NAME}/
-cp LICENSE ${PACKAGE_DIR}/usr/share/doc/${PACKAGE_NAME}/ 2>/dev/null || echo "No LICENSE file found"
+cp LICENSE ${PACKAGE_DIR}/usr/share/doc/${PACKAGE_NAME}/copyright 2>/dev/null || echo "No LICENSE file found"
+cp DEBIAN/changelog ${PACKAGE_DIR}/usr/share/doc/${PACKAGE_NAME}/changelog 2>/dev/null || echo "No Debian changelog found"
+gzip -9 -n -f ${PACKAGE_DIR}/usr/share/doc/${PACKAGE_NAME}/changelog
 
 # Set permissions
 echo "Setting permissions..."
 find ${PACKAGE_DIR} -type f -exec chmod 644 {} \;
 find ${PACKAGE_DIR} -type d -exec chmod 755 {} \;
+chmod 755 ${PACKAGE_DIR}/usr/games/${PACKAGE_NAME}
 chmod 755 ${PACKAGE_DIR}/usr/bin/${PACKAGE_NAME}
 chmod 755 ${PACKAGE_DIR}/DEBIAN/postinst
 chmod 755 ${PACKAGE_DIR}/DEBIAN/postrm
 
-# Build the package
+# Build the package (--root-owner-group ensures root ownership in the archive)
 echo "Building .deb package..."
-dpkg-deb --build ${PACKAGE_DIR}
+dpkg-deb --build --root-owner-group ${PACKAGE_DIR}
 
 # Move to root directory
 mv ${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}.deb ./

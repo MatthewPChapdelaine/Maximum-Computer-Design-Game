@@ -18,7 +18,9 @@ A strategic RPG-style game for Linux where you build the ultimate high-performan
   - 💾 Storage (500GB SSDs to 1PB+ RAID arrays)
   - 🎨 GPUs (budget cards to 8x NVIDIA H200 setups)
   - 🔧 Infrastructure (motherboards, networking, cooling, power)
-- **Save/Load System**: Continue your journey anytime
+- **Save/Load System**: Continue your journey anytime, plus auto-save
+- **Achievement System**: 15 achievements to unlock as you build
+- **Auto-Save**: Progress saved automatically every ~30 seconds and on close
 - **Ultimate Goal**: Build the $1M+ maximum performance Linux machine!
 
 ## 📦 Installation
@@ -37,7 +39,7 @@ chmod +x build-deb.sh
 ./build-deb.sh
 
 # Install
-sudo dpkg -i maximum-pc-builder_1.0.0.deb
+sudo dpkg -i maximum-pc-builder_1.1.0.deb
 
 # Fix any dependency issues (if needed)
 sudo apt-get install -f
@@ -71,6 +73,7 @@ After installation, you can launch the game:
 
 - **Passive Income**: Earn money and research points over time
 - **Research**: Click components and start research to unlock them
+- **Research Costs**: Starting research consumes research points equal to the research time in seconds
 - **Purchase**: Buy researched components to add them to your build
 - **Progress Bars**: Watch research complete in real-time
 - **Performance Score**: Track your overall system performance
@@ -116,7 +119,7 @@ chmod +x build-deb.sh
 # Build the .deb package
 ./build-deb.sh
 
-# The package will be created as maximum-pc-builder_1.0.0.deb
+# The package will be created as maximum-pc-builder_1.1.0.deb
 ```
 
 ### Project Structure

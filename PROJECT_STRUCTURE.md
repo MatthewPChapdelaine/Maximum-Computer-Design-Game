@@ -4,7 +4,7 @@
 Maximum-Computer-Design-Game/
 │
 ├── src/
-│   └── maximum_pc_game.py          # Main game application (900+ lines)
+│   └── maximum_pc_game.py          # Main game application (950+ lines)
 │
 ├── DEBIAN/
 │   ├── control                     # Debian package metadata
@@ -32,13 +32,15 @@ Maximum-Computer-Design-Game/
 # Generated During Build
 
 build/                              # Build artifacts (created by build-deb.sh)
-└── maximum-pc-builder_1.0.0/       # Package contents
+└── maximum-pc-builder_1.1.0/       # Package contents
     ├── DEBIAN/
     │   ├── control
     │   ├── postinst
     │   └── postrm
     ├── usr/
     │   ├── bin/
+    │   │   └── maximum-pc-builder  # Symlink to ../games/maximum-pc-builder
+    │   ├── games/
     │   │   └── maximum-pc-builder  # Launcher script
     │   └── share/
     │       ├── applications/
@@ -52,7 +54,7 @@ build/                              # Build artifacts (created by build-deb.sh)
     │               ├── README.md
     │               └── LICENSE
 
-maximum-pc-builder_1.0.0.deb        # Final installable package
+maximum-pc-builder_1.1.0.deb        # Final installable package
 
 # User Data
 
@@ -68,7 +70,7 @@ Main game implementation featuring:
 - Component class definition
 - MaximumPCGame class with full game logic
 - Tkinter GUI implementation
-- 40+ game components across 8 categories
+- 38 game components across 8 categories
 - Research system with progress tracking
 - Purchase system with prerequisites
 - Save/load functionality
@@ -212,7 +214,7 @@ When installed via .deb or install.sh:
 ## Key Features
 
 ### Component System
-- 40+ components across 8 categories
+- 38 components across 8 categories
 - Progressive tech tree with prerequisites
 - Real-world inspired specifications
 - Cost range: $50 to $500,000 per component
@@ -222,6 +224,7 @@ When installed via .deb or install.sh:
 - Research points (starting: 100)
 - Power budget (dynamic based on PSU)
 - Performance score (aggregate metric)
+- Research costs consume research points equal to research time in seconds
 
 ### Game Mechanics
 - Real-time resource generation
@@ -229,7 +232,10 @@ When installed via .deb or install.sh:
 - Power budget constraints
 - Prerequisite enforcement
 - Save/load functionality
-- Victory detection
+- Auto-save every ~30 seconds and on window close
+- Stats tracking (money earned, researches completed, purchases, play time)
+- Achievement system with 15 unlockable achievements
+- Victory detection (persisted in save)
 
 ### UI Features
 - Dark theme optimized for extended play
@@ -245,7 +251,7 @@ When installed via .deb or install.sh:
 - **GUI Framework**: Tkinter (standard library)
 - **Package Format**: Debian .deb
 - **Save Format**: JSON
-- **Lines of Code**: ~900 (main game file)
+- **Lines of Code**: ~950 (main game file)
 - **Package Size**: ~50KB (without dependencies)
 - **Memory Usage**: ~50-100MB during gameplay
 - **Supported Platforms**: Linux (all distributions)
@@ -255,7 +261,7 @@ When installed via .deb or install.sh:
 1. **Edit Source**: Modify `src/maximum_pc_game.py`
 2. **Test**: Run with `./run-game.sh` or `python3 src/maximum_pc_game.py`
 3. **Build**: Execute `./build-deb.sh` to create package
-4. **Install**: Install with `sudo dpkg -i maximum-pc-builder_1.0.0.deb`
+4. **Install**: Install with `sudo dpkg -i maximum-pc-builder_1.1.0.deb`
 5. **Test Installation**: Launch from application menu or terminal
 6. **Distribute**: Share the .deb file
 
@@ -263,7 +269,6 @@ When installed via .deb or install.sh:
 
 Potential additions based on code structure:
 
-- Achievement system (tracking milestones)
 - Multiple save slots
 - Benchmark/score attack mode
 - Additional component tiers
@@ -315,7 +320,7 @@ The main game file (`src/maximum_pc_game.py`) is organized as follows:
 
 1. **Imports and Docstring** (lines 1-10)
 2. **Component Class** (lines 12-25)
-3. **MaximumPCGame Class** (lines 27-900+)
+3. **MaximumPCGame Class** (lines 27-950+)
    - Initialization
    - Component creation
    - UI setup

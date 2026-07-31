@@ -5,12 +5,27 @@ All notable changes to the Maximum PC Builder game will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-31
+
+### Added
+- Achievement system with 15 unlockable achievements
+- Stats tracking (money earned, researches completed, purchases, play time)
+- Auto-save every ~30 seconds and on window close
+- Research costs: starting research consumes research points equal to its research time in seconds
+- Victory state saved and loaded; victory popup shows once per save
+
+### Fixed
+- PSU power budget no longer drops when buying a smaller PSU
+- Research completion now refreshes the progress bar and details panel
+- Victory accepts alternate components (AMD EPYC 9754 or Intel Xeon Platinum 8592+; NVIDIA H200 Octo or NVIDIA B200 Quad)
+- Game loads saved state silently at startup
+
 ## [1.0.0] - 2026-01-13
 
 ### Added
 - Initial release of Maximum PC Builder game
 - Progressive research system with tech tree
-- 40+ components across 8 categories (CPU, RAM, Storage, GPU, Infrastructure, Network, Power, Cooling)
+- 38 components across 8 categories (CPU, RAM, Storage, GPU, Infrastructure, Network, Power, Cooling)
 - Real-time resource management (money, research points, power budget)
 - Performance scoring system
 - Save/Load game functionality
@@ -45,7 +60,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned Features
-- Achievement system
 - Benchmark mode
 - Multiple difficulty levels
 - Additional component tiers

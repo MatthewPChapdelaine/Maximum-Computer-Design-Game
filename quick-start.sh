@@ -93,7 +93,7 @@ case $choice in
             
             if [[ $install_now != "n" && $install_now != "N" ]]; then
                 echo "Installing..."
-                sudo dpkg -i maximum-pc-builder_1.0.0.deb
+                sudo dpkg -i maximum-pc-builder_1.1.0.deb
                 
                 if [ $? -ne 0 ]; then
                     echo "Fixing dependencies..."

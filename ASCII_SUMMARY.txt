@@ -22,7 +22,7 @@
 
     Total Files Created................... 20+
     Lines of Game Code.................... 900+
-    Game Components....................... 40+
+    Game Components....................... 38
     Documentation Pages................... 7
     Installation Methods.................. 3
     
@@ -34,9 +34,11 @@
     ✓ Progressive Research System
     ✓ Resource Management
     ✓ Progress Bars & Real-time Updates
-    ✓ 40+ PC Components (8 Categories)
+    ✓ 38 PC Components (8 Categories)
     ✓ Tech Tree with Prerequisites
     ✓ Save/Load System
+    ✓ Auto-Save (Every ~30s)
+    ✓ Achievement System (15)
     ✓ Victory Condition
     ✓ Professional Dark Theme UI
     ✓ .deb Package Installation
@@ -52,7 +54,7 @@
 
     # Option 2: Build & Install .deb
     chmod +x build-deb.sh && ./build-deb.sh
-    sudo dpkg -i maximum-pc-builder_1.0.0.deb
+    sudo dpkg -i maximum-pc-builder_1.1.0.deb
     
     # Option 3: Manual Install
     chmod +x install.sh && ./install.sh
@@ -157,6 +159,7 @@
     ⚡ Power Management  - Balance consumption vs capacity
     📊 Progress Bars     - Real-time research tracking
     💾 Save/Load         - Continue anytime
+    🏆 Achievements      - 15 milestones to unlock
     🎯 Strategy          - Plan optimal upgrade paths
     🏆 Victory Screen    - Complete ultimate build
     🖥️  Desktop App       - Native Linux integration

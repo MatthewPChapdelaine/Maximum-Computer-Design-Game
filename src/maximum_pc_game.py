@@ -26,6 +26,60 @@ class Component:
         self.owned = False
         self.research_progress = 0
 
+def _owns_component(game, name):
+    """Helper to check if a component is owned"""
+    return any(c.name == name and c.owned for c in game.components)
+
+ACHIEVEMENTS = [
+    {"id": "first_build", "name": "First Build",
+     "description": "Own at least 1 component",
+     "condition": lambda g: sum(1 for c in g.components if c.owned) >= 1},
+    {"id": "scholar", "name": "Scholar",
+     "description": "Complete 5 research projects",
+     "condition": lambda g: g.stats["researches_completed"] >= 5},
+    {"id": "research_master", "name": "Research Master",
+     "description": "Complete 15 research projects",
+     "condition": lambda g: g.stats["researches_completed"] >= 15},
+    {"id": "money_maker", "name": "Money Maker",
+     "description": "Earn $100,000 in passive income",
+     "condition": lambda g: g.stats["money_earned"] >= 100000},
+    {"id": "tycoon", "name": "Tech Tycoon",
+     "description": "Earn $500,000 in passive income",
+     "condition": lambda g: g.stats["money_earned"] >= 500000},
+    {"id": "power_player", "name": "Power Player",
+     "description": "Reach a 24,000W power budget",
+     "condition": lambda g: g.power_budget >= 24000},
+    {"id": "memory_mogul", "name": "Memory Mogul",
+     "description": "Own the 24TB DDR5-6400 Ultimate",
+     "condition": lambda g: _owns_component(g, "24TB DDR5-6400 Ultimate")},
+    {"id": "storage_giant", "name": "Storage Giant",
+     "description": "Own the 1PB RAID Array",
+     "condition": lambda g: _owns_component(g, "1PB RAID Array")},
+    {"id": "compute_champion", "name": "Compute Champion",
+     "description": "Own the NVIDIA H200 Octo",
+     "condition": lambda g: _owns_component(g, "NVIDIA H200 Octo")},
+    {"id": "server_king", "name": "Server King",
+     "description": "Own the Server Platform",
+     "condition": lambda g: _owns_component(g, "Server Platform")},
+    {"id": "network_ninja", "name": "Network Ninja",
+     "description": "Own the 100Gb QSFP28 Dual",
+     "condition": lambda g: _owns_component(g, "100Gb QSFP28 Dual")},
+    {"id": "core_lord", "name": "Core Lord",
+     "description": "Own the AMD EPYC 9754 or Intel Xeon Platinum 8592+",
+     "condition": lambda g: any(
+         c.name in ("AMD EPYC 9754", "Intel Xeon Platinum 8592+") and c.owned
+         for c in g.components)},
+    {"id": "techno_supremacy", "name": "Technological Supremacy",
+     "description": "Complete the Ultimate Build",
+     "condition": lambda g: g.victory_achieved is True},
+    {"id": "completionist", "name": "Completionist",
+     "description": "Own every component in the game",
+     "condition": lambda g: all(c.owned for c in g.components)},
+    {"id": "veteran", "name": "Veteran Builder",
+     "description": "Play for 30 minutes",
+     "condition": lambda g: g.stats["play_seconds"] >= 1800},
+]
+
 class MaximumPCGame:
     """Main game class for Maximum PC Builder"""
     
@@ -49,15 +103,29 @@ class MaximumPCGame:
         self.components = self._create_components()
         self.selected_component = None
         self.active_research = None
+        self.victory_achieved = False
+        self.auto_save_counter = 0
+        
+        # Stats and achievements
+        self.stats = {
+            "money_earned": 0.0,
+            "researches_completed": 0,
+            "purchases": 0,
+            "play_seconds": 0.0
+        }
+        self.achievements_unlocked = {}
         
         # Setup UI
         self._setup_ui()
         
+        # Save on window close
+        self.root.protocol("WM_DELETE_WINDOW", self._on_close)
+        
         # Start game loop
         self._game_loop()
         
-        # Load saved game if exists
-        self._load_game()
+        # Load saved game if exists (silent at startup)
+        self._load_game(silent=True)
     
     def _create_components(self):
         """Create all available components"""
@@ -419,6 +487,8 @@ class MaximumPCGame:
                  bg='#95e1d3', fg='#000000', font=('Arial', 11, 'bold')).pack(side=tk.LEFT, padx=10, pady=10)
         tk.Button(bottom_frame, text="🔄 Reset Game", command=self._reset_game,
                  bg='#ff6b6b', fg='#000000', font=('Arial', 11, 'bold')).pack(side=tk.LEFT, padx=10, pady=10)
+        tk.Button(bottom_frame, text="🏆 Achievements", command=self._show_achievements,
+                 bg='#f9d423', fg='#000000', font=('Arial', 11, 'bold')).pack(side=tk.LEFT, padx=10, pady=10)
         
         # Initialize component list
         self._update_component_list()
@@ -474,7 +544,8 @@ class MaximumPCGame:
         details += f"Category: {comp.category}\n"
         details += f"Cost: ${comp.base_cost:,.0f}\n"
         details += f"Power Draw: {comp.power_draw}W\n"
-        details += f"Research Time: {comp.research_time}s\n\n"
+        details += f"Research Time: {comp.research_time}s\n"
+        details += f"Research Cost: {comp.research_time} points\n\n"
         details += f"Description:\n{comp.description}\n\n"
         
         if comp.performance_boost:
@@ -482,7 +553,7 @@ class MaximumPCGame:
             for key, value in comp.performance_boost.items():
                 details += f"  • {key.replace('_', ' ').title()}: {value:,.0f}\n"
         
-        details += f"\nPrerequisites:\n"
+        details += "\nPrerequisites:\n"
         if comp.prerequisites:
             for prereq in comp.prerequisites:
                 prereq_comp = next((c for c in self.components if c.name == prereq), None)
@@ -492,7 +563,7 @@ class MaximumPCGame:
         else:
             details += "  None\n"
         
-        details += f"\nStatus:\n"
+        details += "\nStatus:\n"
         if comp.owned:
             details += "  ✓ Owned\n"
         elif comp.researched:
@@ -537,6 +608,15 @@ class MaximumPCGame:
         if comp.researched or comp.owned:
             return
         
+        # Check research points
+        if self.research_points < comp.research_time:
+            messagebox.showwarning(
+                "Insufficient Research Points",
+                f"Researching this component costs {comp.research_time:.0f} points "
+                f"but you only have {self.research_points:.0f}!"
+            )
+            return
+        
         # Check prerequisites
         prereqs_met = all(
             next((c for c in self.components if c.name == p), None).owned
@@ -548,6 +628,7 @@ class MaximumPCGame:
                                   "You must own all prerequisite components first!")
             return
         
+        self.research_points -= comp.research_time
         self.active_research = comp
         comp.research_progress = 0
         self._update_component_list()
@@ -580,6 +661,7 @@ class MaximumPCGame:
         # Purchase
         self.money -= comp.base_cost
         comp.owned = True
+        self.stats["purchases"] += 1
         
         # Update performance
         if comp.performance_boost:
@@ -588,7 +670,7 @@ class MaximumPCGame:
         
         # Update power budget if it's a PSU
         if comp.category == "Power" and "power_capacity" in comp.performance_boost:
-            self.power_budget = comp.performance_boost["power_capacity"]
+            self._recalculate_power_budget()
         
         self._update_component_list()
         self._update_details()
@@ -598,6 +680,7 @@ class MaximumPCGame:
         
         # Check for ultimate build completion
         self._check_ultimate_build()
+        self._check_achievements()
     
     def _game_loop(self):
         """Main game loop"""
@@ -608,19 +691,33 @@ class MaximumPCGame:
         self.money += self.money_per_tick
         self.research_points += self.research_per_tick
         
+        # Track stats
+        self.stats["money_earned"] += self.money_per_tick
+        self.stats["play_seconds"] += self.tick_rate / 1000.0
+        
         # Update research progress
         if self.active_research:
             self.active_research.research_progress += self.tick_rate / 1000.0
             
             if self.active_research.research_progress >= self.active_research.research_time:
-                self.active_research.researched = True
-                comp_name = self.active_research.name
+                completed = self.active_research
+                completed.researched = True
+                self.stats["researches_completed"] += 1
                 self.active_research = None
                 self._update_component_list()
-                messagebox.showinfo("Research Complete", f"Research completed: {comp_name}!")
+                self._check_achievements()
+                messagebox.showinfo("Research Complete", f"Research completed: {completed.name}!")
+                if self.selected_component == completed:
+                    self._update_details()
             
             if self.selected_component == self.active_research:
                 self._update_details()
+        
+        # Auto-save every 300 ticks
+        self.auto_save_counter += 1
+        if self.auto_save_counter >= 300:
+            self.auto_save_counter = 0
+            self._save_game(silent=True)
         
         # Update UI
         self._update_status()
@@ -644,33 +741,40 @@ class MaximumPCGame:
     def _check_ultimate_build(self):
         """Check if ultimate build is complete"""
         ultimate_components = [
-            "AMD EPYC 9754",
             "24TB DDR5-6400 Ultimate",
             "1PB RAID Array",
-            "NVIDIA H200 Octo",
             "Server Platform",
             "100Gb QSFP28 Dual",
             "Quad 6kW Titanium"
         ]
         
+        cpu_owned = any(c.name in ("AMD EPYC 9754", "Intel Xeon Platinum 8592+") and c.owned
+                        for c in self.components)
+        gpu_owned = any(c.name in ("NVIDIA H200 Octo", "NVIDIA B200 Quad") and c.owned
+                        for c in self.components)
         owned_ultimate = sum(1 for c in self.components if c.name in ultimate_components and c.owned)
         
-        if owned_ultimate == len(ultimate_components):
-            messagebox.showinfo(
-                "🏆 ULTIMATE BUILD COMPLETE! 🏆",
-                "Congratulations! You've built the Maximum Performance Linux Machine!\n\n"
-                f"Final Performance Score: {self.performance_score:,.0f}\n"
-                f"Total Investment: ${sum(c.base_cost for c in self.components if c.owned):,.0f}\n\n"
-                "You've achieved technological supremacy!"
-            )
+        if owned_ultimate == len(ultimate_components) and cpu_owned and gpu_owned:
+            if not self.victory_achieved:
+                self.victory_achieved = True
+                messagebox.showinfo(
+                    "🏆 ULTIMATE BUILD COMPLETE! 🏆",
+                    "Congratulations! You've built the Maximum Performance Linux Machine!\n\n"
+                    f"Final Performance Score: {self.performance_score:,.0f}\n"
+                    f"Total Investment: ${sum(c.base_cost for c in self.components if c.owned):,.0f}\n\n"
+                    "You've achieved technological supremacy!"
+                )
     
-    def _save_game(self):
+    def _save_game(self, silent=False):
         """Save game state"""
         save_data = {
             "money": self.money,
             "research_points": self.research_points,
             "power_budget": self.power_budget,
             "performance_score": self.performance_score,
+            "stats": self.stats,
+            "achievements_unlocked": self.achievements_unlocked,
+            "victory_achieved": self.victory_achieved,
             "components": [
                 {
                     "name": c.name,
@@ -688,9 +792,10 @@ class MaximumPCGame:
         with open(save_path, 'w') as f:
             json.dump(save_data, f, indent=2)
         
-        messagebox.showinfo("Game Saved", f"Game saved successfully!\n{save_path}")
+        if not silent:
+            messagebox.showinfo("Game Saved", f"Game saved successfully!\n{save_path}")
     
-    def _load_game(self):
+    def _load_game(self, silent=False):
         """Load game state"""
         save_path = os.path.expanduser("~/.maximum_pc_game_save.json")
         
@@ -706,12 +811,24 @@ class MaximumPCGame:
             self.power_budget = save_data["power_budget"]
             self.performance_score = save_data["performance_score"]
             
+            default_stats = {
+                "money_earned": 0.0,
+                "researches_completed": 0,
+                "purchases": 0,
+                "play_seconds": 0.0
+            }
+            self.stats = {**default_stats, **save_data.get("stats", {})}
+            self.achievements_unlocked = save_data.get("achievements_unlocked") or {}
+            self.victory_achieved = bool(save_data.get("victory_achieved", False))
+            
             for comp_data in save_data["components"]:
                 comp = next((c for c in self.components if c.name == comp_data["name"]), None)
                 if comp:
                     comp.researched = comp_data["researched"]
                     comp.owned = comp_data["owned"]
                     comp.research_progress = comp_data["research_progress"]
+            
+            self._recalculate_power_budget()
             
             active_research_name = save_data.get("active_research")
             self.active_research = next(
@@ -721,8 +838,11 @@ class MaximumPCGame:
             
             self._update_component_list()
             self._update_status()
+            self._check_ultimate_build()
+            self._check_achievements()
             
-            messagebox.showinfo("Game Loaded", "Game loaded successfully!")
+            if not silent:
+                messagebox.showinfo("Game Loaded", "Game loaded successfully!")
         except Exception as e:
             messagebox.showerror("Load Error", f"Failed to load game: {e}")
     
@@ -734,20 +854,79 @@ class MaximumPCGame:
             self.power_budget = 2000
             self.performance_score = 0
             self.active_research = None
+            self.victory_achieved = False
+            self.auto_save_counter = 0
+            self.stats = {
+                "money_earned": 0.0,
+                "researches_completed": 0,
+                "purchases": 0,
+                "play_seconds": 0.0
+            }
+            self.achievements_unlocked = {}
             
             for comp in self.components:
                 comp.researched = False
                 comp.owned = False
                 comp.research_progress = 0
             
+            self._recalculate_power_budget()
             self._update_component_list()
             self._update_status()
             
             messagebox.showinfo("Game Reset", "Game has been reset to initial state.")
+    
+    def _recalculate_power_budget(self):
+        """Recalculate power budget from all owned power supplies"""
+        total_capacity = sum(
+            c.performance_boost.get("power_capacity", 0)
+            for c in self.components
+            if c.category == "Power" and c.owned
+        )
+        self.power_budget = 2000 + total_capacity
+    
+    def _check_achievements(self):
+        """Check for newly unlocked achievements"""
+        for achievement in ACHIEVEMENTS:
+            if achievement["id"] in self.achievements_unlocked:
+                continue
+            if achievement["condition"](self):
+                self.achievements_unlocked[achievement["id"]] = datetime.now().isoformat()
+                messagebox.showinfo(
+                    "🏆 Achievement Unlocked!",
+                    f"{achievement['name']}\n\n{achievement['description']}"
+                )
+    
+    def _show_achievements(self):
+        """Show the achievements window"""
+        window = tk.Toplevel(self.root)
+        window.title("🏆 Achievements")
+        window.geometry("500x600")
+        window.configure(bg='#1a1a2e')
+        
+        text = tk.Text(window, bg='#0f3460', fg='#ffffff',
+                       font=('Arial', 11), wrap=tk.WORD)
+        text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        unlocked = [a for a in ACHIEVEMENTS if a["id"] in self.achievements_unlocked]
+        locked = [a for a in ACHIEVEMENTS if a["id"] not in self.achievements_unlocked]
+        
+        for a in unlocked + locked:
+            if a["id"] in self.achievements_unlocked:
+                text.insert(tk.END, f"✓ {a['name']} - Unlocked\n")
+            else:
+                text.insert(tk.END, f"🔒 {a['name']} - Locked\n")
+            text.insert(tk.END, f"   {a['description']}\n\n")
+        
+        text.config(state=tk.DISABLED)
+    
+    def _on_close(self):
+        """Save game and close window"""
+        self._save_game(silent=True)
+        self.root.destroy()
 
 def main():
     root = tk.Tk()
-    game = MaximumPCGame(root)
+    MaximumPCGame(root)
     root.mainloop()
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ chmod +x build-deb.sh
 ./build-deb.sh
 
 # Install the package
-sudo dpkg -i maximum-pc-builder_1.0.0.deb
+sudo dpkg -i maximum-pc-builder_1.1.0.deb
 
 # If there are dependency issues
 sudo apt-get install -f
@@ -124,6 +124,7 @@ sudo zypper install python3 python3-tk
 - [ ] Starting performance score is 0
 - [ ] Passive income increases money
 - [ ] Passive research increases research points
+- [ ] Buying the 750W PSU does not drop the power budget (stays >= 2000W)
 
 #### Research Tests
 - [ ] Can select unresearched component
@@ -134,6 +135,8 @@ sudo zypper install python3 python3-tk
 - [ ] Component marked as researched after completion
 - [ ] Notification appears on research completion
 - [ ] Only one research active at a time
+- [ ] Research is blocked when research points are less than the cost
+- [ ] Research points are deducted on research start (1 point per second of research time)
 
 #### Purchase Tests
 - [ ] Purchase button enables for researched, affordable components
@@ -157,6 +160,14 @@ sudo zypper install python3 python3-tk
 - [ ] Can load saved game
 - [ ] All state restored correctly (money, components, research)
 - [ ] Active research resumes correctly
+- [ ] Auto-save writes the save file silently (every ~30 seconds)
+- [ ] Auto-save triggers on window close
+
+#### Achievement Tests
+- [ ] Achievement unlock popup appears when a milestone is reached
+- [ ] Achievements window opens via the "🏆 Achievements" button
+- [ ] Achievements window lists all 15 achievements
+- [ ] Achievement progress is tracked and persisted
 
 #### Reset Tests
 - [ ] Reset confirmation dialog appears
@@ -166,8 +177,11 @@ sudo zypper install python3 python3-tk
 
 #### Victory Tests
 - [ ] Game detects ultimate build completion
+- [ ] Victory accepts alternate CPU (AMD EPYC 9754 or Intel Xeon Platinum 8592+)
+- [ ] Victory accepts alternate GPU (NVIDIA H200 Octo or NVIDIA B200 Quad)
 - [ ] Victory message displays with correct stats
 - [ ] Can continue playing after victory
+- [ ] Victory state persists after save/load
 
 ### Performance Tests
 - [ ] Game loop runs smoothly (no lag)
@@ -250,10 +264,9 @@ rm ~/.maximum_pc_game_save.json
 
 - Single research queue (only one component at a time)
 - No sound effects or music
-- No achievements system yet
 - No multiplayer or leaderboards
 - Save file is plain JSON (not encrypted)
-- No automatic save (manual only)
+- Auto-save interval is fixed (every ~30 seconds, not configurable)
 
 ## Performance Requirements
 
